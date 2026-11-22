@@ -31,8 +31,12 @@ jobs:
           ANDROID_DIR=$(find extracted -name settings.gradle.kts -printf '%h\n' | head -n 1)
           echo "ANDROID_DIR=$ANDROID_DIR" >> $GITHUB_ENV
 
-      - name: Show build file
-        run: head -n 15 "$ANDROID_DIR/app/build.gradle.kts"
+      - name: Fix build file
+        run: |
+          F="$ANDROID_DIR/app/build.gradle.kts"
+          sed -i 's/java\.util\.Properties()/Properties()/' "$F"
+          sed -i '1i import java.util.Properties' "$F"
+          head -n 8 "$F"
 
       - name: Build APK
         run: gradle -p "$ANDROID_DIR" assembleDebug
