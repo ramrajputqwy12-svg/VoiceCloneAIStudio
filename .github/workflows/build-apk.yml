@@ -36,7 +36,10 @@ jobs:
           F="$ANDROID_DIR/app/build.gradle.kts"
           sed -i 's/java\.util\.Properties()/Properties()/' "$F"
           sed -i '1i import java.util.Properties' "$F"
-          echo "---- VOICE_API_BASE_URL lines ----"
+          echo "---- BEFORE ----"
+          grep -n "VOICE_API_BASE_URL" "$F"
+          sed -i '/buildConfigField.*VOICE_API_BASE_URL/c\buildConfigField("String", "VOICE_API_BASE_URL", "\\"$voiceApiBaseUrl\\"")' "$F"
+          echo "---- AFTER ----"
           grep -n "VOICE_API_BASE_URL" "$F"
 
       - name: Build APK
